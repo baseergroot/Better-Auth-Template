@@ -1,6 +1,14 @@
-import { createAuthClient } from "better-auth/react"
+// import { createAuthClient } from "better-auth/client";
+// const authClient = createAuthClient();
+
+// const signIn = async () => {
+//   const data = await authClient.signIn.social({
+//     provider: "google",
+//   });
+// };
+
+import { createAuthClient } from 'better-auth/client';
 
 export const authClient = createAuthClient({
-    /** The base URL of the server (optional if you're using the same domain) */
-    baseURL: "http://localhost:3000"
-})
+  baseURL: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+});

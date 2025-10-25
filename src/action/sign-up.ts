@@ -1,22 +1,17 @@
 "use server"
 
-import { authClient } from "@/lib/auth-client"; //import the auth client
+import { auth } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
-const SignupAction = await authClient.signUp.email({
-        email, // user email address
-        password, // user password -> min 8 characters by default
-        name, // user display name
-        image, // User image URL (optional)
-        callbackURL: "/dashboard" // A URL to redirect to after the user verifies their email (optional)
-    }, {
-        onRequest: (ctx) => {
-            //show loading
-        },
-        onSuccess: (ctx) => {
-            //redirect to the dashboard or sign in page
-        },
-        onError: (ctx) => {
-            // display the error message
-            alert(ctx.error.message);
-        },
-});
+const SignupAction = async (formData: FormData) => {
+    await auth.api.signUpEmail({
+        body: {
+            name: formData.get("name") as string,
+            email: formData.get("email") as string,
+            password: formData.get("password") as string,
+        }
+    })
+    revalidatePath('/auth')
+}
+
+export default SignupAction;

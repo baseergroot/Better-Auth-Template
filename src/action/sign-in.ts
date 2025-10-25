@@ -1,23 +1,18 @@
 "use server"
 
-const SigninAction = await authClient.signIn.email({
-        /**
-         * The user email
-         */
-        email,
-        /**
-         * The user password
-         */
-        password,
-        /**
-         * A URL to redirect to after the user verifies their email (optional)
-         */
-        callbackURL: "/dashboard",
-        /**
-         * remember the user session after the browser is closed. 
-         * @default true
-         */
-        rememberMe: false
-}, {
-    //callbacks
-})
+import { auth } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
+
+
+const SigninAction = async (formData: FormData) => {
+    const response = await auth.api.signInEmail({
+        body: {
+            email: formData.get("email") as string,
+            password: formData.get("password") as string,
+        }
+    })
+    console.log("Signin response:", response);
+    revalidatePath('/auth')
+}
+
+export default SigninAction;
