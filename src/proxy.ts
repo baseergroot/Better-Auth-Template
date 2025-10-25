@@ -7,17 +7,17 @@ export default async function proxy(request: NextRequest) {
         headers: await headers()
     })
 
-    if(!session) {
-        return NextResponse.redirect(new URL("/sign-in", request.url));
+    const currentPath:string = request.nextUrl.pathname;
+    const authRoutes: string[]  = ["/sign-in", "/sign-up", "/forgot-password", "/auth"];
+    const protectedRoutes: string[] = ["/dashboard", "/profile", "/settings"];
+
+    if(!session && protectedRoutes.includes(currentPath)) {
+        return NextResponse.redirect(new URL("/auth", request.url));
     }
 
-    // if(session.user) {
-    //     return NextResponse.redirect(new URL("/dashboard", request.url));
-    // }
+    if(session  && authRoutes.includes(currentPath)) {
+        return NextResponse.redirect(new URL("/", request.url));
+    }
 
     return NextResponse.next();
 }
-
-export const config = {
-  matcher: ["/dashboard"], // Apply middleware to specific routes
-};
